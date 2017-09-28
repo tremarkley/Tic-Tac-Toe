@@ -68,15 +68,14 @@ function PlayAgainControl(props) {
               }],
               xIsNext: true,
               isPlayAgain: true,
-              turnsPlayed: 0,
+              stepNumber: 0,
           };
       }
 
       handleClick(i) {
-        const history = this.state.history;
+        const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
         const squares = current.squares.slice();
-        const turnsPlayed = this.state.turnsPlayed + 1;
         if (calculateWinner(squares) || squares[i]) {
             return;
         }
@@ -85,25 +84,29 @@ function PlayAgainControl(props) {
             history: history.concat([{
                 squares: squares,
             }]),
+            stepNumber: history.length,
             xIsNext: !this.state.xIsNext,
-            turnsPlayed: turnsPlayed,
+        });
+    }
+
+    jumpTo(step) {
+        this.setState({
+            stepNumber: step,
+            xIsNext: (step % 2) === 0,
         });
     }
 
     handleYesClick() {
-        //const squares = Array(9).fill(null);
-        const history = this.state.history;
         const squares = Array(9).fill(null);
         const isPlayAgain = true;
         const xIsNext = true;
-        const turnsPlayed = 0;
         this.setState({
             isPlayAgain: isPlayAgain,
-            history: history.concat([{
+            history: [{
                 squares: squares,
-            }]),
+            }],
             xIsNext: xIsNext,
-            turnsPlayed: turnsPlayed,
+            stepNumber: 0,
         })
     }
 
@@ -125,20 +128,20 @@ function PlayAgainControl(props) {
 
     render() {
         const history = this.state.history;
-        const current = history[history.length - 1];
+        const current = history[this.state.stepNumber];
         const winner = calculateWinner(current.squares);
         const isPlayAgain = this.state.isPlayAgain;
 
-        /*const moves = history.map((step, move) => {
-                const desc = move ?
-                'Move #' + move :
-                'Game start';
+        const moves = history.map((step, move) => {
+            const desc = move ? 
+            'Move #' + move :
+            'Game start';
+            return (
+                <li key={move}>
+                    <a href="#" onClick={() => this.jumpTo(move)}>{desc}</a>
+                </li>
+            );
         });
-        return (
-            <li>
-                <a href="#" onClick={() => this.jumpTo(move)}>{desc}</a>
-            </li>
-        )*/
 
         let status;
         var playAgain;
@@ -147,7 +150,7 @@ function PlayAgainControl(props) {
             status = winner + ' Player wins!';
             playAgain = this.renderPlayAgainControl();
         }
-        else if (this.state.turnsPlayed === 9)
+        else if (this.state.stepNumber === 9)
         {
             status = "Tie Game!";
             playAgain = this.renderPlayAgainControl();
@@ -158,7 +161,7 @@ function PlayAgainControl(props) {
 
         if (isPlayAgain === false)
         {
-            alert("You have to Play Again");
+            alert("Ok.");
         }
 
       return (
@@ -172,7 +175,7 @@ function PlayAgainControl(props) {
           <div className="game-info">
             <div>{status}</div>
             <div>{playAgain}</div>
-            <ol>{/*moves*/}</ol>
+            <ol>{moves}</ol>
           </div>
         </div>
       );
