@@ -111,10 +111,11 @@ function PlayAgainControl(props) {
     }
 
     handleNoClick() {
-        const isPlayAgain = false;
-        this.setState({
+        //const isPlayAgain = false;
+        /*this.setState({
             isPlayAgain: isPlayAgain,
-        })
+        })*/
+        alert("Ok.");
     }
 
     renderPlayAgainControl() {
@@ -159,10 +160,10 @@ function PlayAgainControl(props) {
             status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
         }
 
-        if (isPlayAgain === false)
+        /*if (isPlayAgain === false)
         {
             alert("Ok.");
-        }
+        }*/
 
       return (
         <div className="game">
